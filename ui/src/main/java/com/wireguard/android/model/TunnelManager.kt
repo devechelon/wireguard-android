@@ -38,6 +38,7 @@ import java.util.ArrayList
  */
 class TunnelManager(private val configStore: ConfigStore) : BaseObservable() {
     val tunnels = CompletableFuture<ObservableSortedKeyedArrayList<String, ObservableTunnel>>()
+    val tunnelsAsync = CompletableDeferred<ObservableSortedKeyedArrayList<String, ObservableTunnel>>()
     private val context: Context = get()
     private val delayedLoadRestoreTunnels = ArrayList<CompletableFuture<Void>>()
     private val tunnelMap: ObservableSortedKeyedArrayList<String, ObservableTunnel> = ObservableSortedKeyedArrayList(TunnelComparator)
@@ -136,6 +137,7 @@ class TunnelManager(private val configStore: ConfigStore) : BaseObservable() {
             }
         }
         tunnels.complete(tunnelMap)
+        tunnelsAsync.complete(tunnelMap)
     }
 
     fun refreshTunnelStates() {
