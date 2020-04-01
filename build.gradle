@@ -8,7 +8,7 @@ allprojects {
 
 buildscript {
     ext {
-        agpVersion = '3.6.2'
+        agpVersion = '4.1.0-alpha04'
         annotationsVersion = '1.1.0'
         appcompatVersion = '1.1.0'
         bintrayPluginVersion = '1.8.4'
@@ -27,8 +27,7 @@ buildscript {
         materialComponentsVersion = '1.2.0-alpha05'
         mavenPluginVersion = '2.1'
         preferenceVersion = '1.1.0'
-        streamsupportVersion = '1.7.2'
-        threetenabpVersion = '1.2.3'
+        futuresupportVersion = '1.7.2'
         zxingEmbeddedVersion = '3.6.0'
 
         groupName = 'com.wireguard.android'
