@@ -97,7 +97,7 @@ class ZipExporterPreference(context: Context, attrs: AttributeSet?) : Preference
                     prefActivity.ensurePermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)) { _, grantResults ->
                         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                             isEnabled = false
-                            launch { exportZip(Application.getTunnelManager().tunnelsAsync.await()) }
+                            launch { exportZip(Application.getTunnelManager().getTunnelsAsync()) }
                         }
                     }
                 }

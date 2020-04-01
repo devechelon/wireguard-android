@@ -41,7 +41,7 @@ import java.util.ArrayList
  */
 class TunnelManager(private val configStore: ConfigStore) : BaseObservable() {
     val tunnels = CompletableFuture<ObservableSortedKeyedArrayList<String, ObservableTunnel>>()
-    val tunnelsAsync = CompletableDeferred<ObservableSortedKeyedArrayList<String, ObservableTunnel>>()
+    private val tunnelsAsync = CompletableDeferred<ObservableSortedKeyedArrayList<String, ObservableTunnel>>()
     private val context: Context = get()
     private val delayedLoadRestoreTunnels = ArrayList<CompletableFuture<Void>>()
     private val tunnelMap: ObservableSortedKeyedArrayList<String, ObservableTunnel> = ObservableSortedKeyedArrayList(TunnelComparator)
@@ -100,6 +100,8 @@ class TunnelManager(private val configStore: ConfigStore) : BaseObservable() {
             else
                 getSharedPreferences().edit().remove(KEY_LAST_USED_TUNNEL).commit()
         }
+
+    suspend fun getTunnelsAsync() = tunnelsAsync.await()
 
     fun getTunnelConfig(tunnel: ObservableTunnel): CompletionStage<Config> = getAsyncWorker()
             .supplyAsync { configStore.load(tunnel.name) }.thenApply(tunnel::onConfigChanged)
@@ -236,7 +238,7 @@ class TunnelManager(private val configStore: ConfigStore) : BaseObservable() {
             }
             val tunnelName = intent.getStringExtra("tunnel") ?: return
             launch {
-                manager.tunnelsAsync.await().let {
+                manager.getTunnelsAsync().let {
                     val tunnel = it[tunnelName] ?: return@launch
                     manager.setTunnelState(tunnel, state)
                 }
