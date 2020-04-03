@@ -24,6 +24,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
@@ -37,12 +38,12 @@ class ZipExporterPreference(context: Context, attrs: AttributeSet?) : Preference
     override val coroutineContext
         get() = Job() + Dispatchers.Default
 
-    private suspend fun exportZip(tunnels: List<ObservableTunnel>) {
+    private suspend fun exportZip(tunnels: List<ObservableTunnel>) = supervisorScope {
         val asyncConfigs = tunnels.map { it.getConfigAsync() }.toList()
         if (asyncConfigs.isEmpty()) {
             exportZipComplete(null, IllegalArgumentException(
                     context.getString(R.string.no_tunnels_error)))
-            return
+            return@supervisorScope
         }
         try {
             asyncConfigs.awaitAll().let {
