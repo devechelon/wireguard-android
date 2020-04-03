@@ -51,9 +51,9 @@ class ZipExporterPreference(context: Context, attrs: AttributeSet?) : Preference
                 try {
                     withContext(Dispatchers.IO) {
                         ZipOutputStream(outputFile.outputStream).use { zip ->
-                            asyncConfigs.forEachIndexed { i, deferred ->
+                            it.forEachIndexed { i, config ->
                                 zip.putNextEntry(ZipEntry("${tunnels[i].name}.conf"))
-                                zip.write(deferred.await().toWgQuickString().toByteArray(Charsets.UTF_8))
+                                zip.write(config.toWgQuickString().toByteArray(Charsets.UTF_8))
                             }
                             zip.closeEntry()
                         }
